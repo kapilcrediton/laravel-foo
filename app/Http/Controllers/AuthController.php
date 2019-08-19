@@ -13,7 +13,7 @@ use App\Providers\TokenAuth\Facade as TokenAuth;
 class AuthController extends Controller {
     public function register(Request $request)
     {
-        $input = $request->input();
+        $input = $request->only(['name', 'email', 'password']);
 
         $validator = Validator::make($input, [
             'name' => 'required|max:191',
@@ -42,7 +42,7 @@ class AuthController extends Controller {
 
     public function login(Request $request)
     {
-        $input = $request->input();
+        $input = $request->only(['email', 'password']);
 
         $validator = Validator::make($input, [
             'email' => 'required|email|max:191|exists:users',

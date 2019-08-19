@@ -21,3 +21,13 @@ Route::prefix('/auth')->group(function () {
 	Route::get('/account', 'AuthController@account')->middleware('tokenAuth.loggedIn');
 	Route::post('/logout', 'AuthController@logout')->middleware('tokenAuth.loggedIn');
 });
+
+Route::middleware('tokenAuth.loggedIn')->prefix('/todos')->group(function () {
+    Route::get('/', 'TodosController@index');
+    Route::get('/{id}', 'TodosController@show');
+    Route::post('/', 'TodosController@create');
+    Route::put('/{id}', 'TodosController@update');
+    Route::put('/{id}/complete', 'TodosController@complete');
+    Route::put('/{id}/incomplete', 'TodosController@incomplete');
+    Route::delete('/{id}', 'TodosController@destroy');
+});
