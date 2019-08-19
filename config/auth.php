@@ -100,4 +100,6 @@ return [
         ],
     ],
 
+    
+    'token_lifetime' => 86400
 ];

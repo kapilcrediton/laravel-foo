@@ -6,6 +6,9 @@ use App\User;
 use Illuminate\Http\Request;
 use Validator;
 use Hash;
+use Str;
+use Cache;
+use App\Providers\TokenAuth\Facade as TokenAuth;
 
 class AuthController extends Controller {
     public function register(Request $request)
@@ -29,10 +32,11 @@ class AuthController extends Controller {
         $user = (new User())->fill($input);
         $user->save();
 
-        // $token = AuthService::loginUserAndGetToken($user);
+        $token = TokenAuth::loginUserAndGetToken($user);
 
         return response()->json([
-            'msg' => 'registered'
+            'msg' => 'registered',
+            'token' => $token
         ]);
     }
 
@@ -55,10 +59,11 @@ class AuthController extends Controller {
 
         if ($success)
         {
-            // $token = AuthService::loginUserAndGetToken($user);
+            $token = TokenAuth::loginUserAndGetToken($user);
 
             return response()->json([
-                'msg' => 'logged in'
+                'msg' => 'logged in',
+                'token' => $token
             ]);
         }
         else
@@ -69,19 +74,24 @@ class AuthController extends Controller {
         }
     }
 
-    public function account()
+    public function account(Request $request)
     {
-        // todo
+        // middleware should allow access to this
+        // action only when $request is logged-in using token
+
+        $user = TokenAuth::getUserForAuthenticatedRequest($request);
+
         return response()->json([
-            'action' => 'view account'
+            'user' => $user
         ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        // todo
+        TokenAuth::logoutAuthenticatedRequest($request);
+
         return response()->json([
-            'action' => 'logout'
+            'msg' => 'done'
         ]);
     }
 }

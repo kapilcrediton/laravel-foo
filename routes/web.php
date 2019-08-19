@@ -16,8 +16,8 @@ Route::get('/', function () {
 });
 
 Route::prefix('/auth')->group(function () {
-	Route::post('/register', 'AuthController@register');
-	Route::post('/login', 'AuthController@login');
-	Route::get('/account', 'AuthController@account');
-	Route::post('/logout', 'AuthController@logout');
+	Route::post('/register', 'AuthController@register')->middleware('tokenAuth.loggedOut');
+	Route::post('/login', 'AuthController@login')->middleware('tokenAuth.loggedOut');
+	Route::get('/account', 'AuthController@account')->middleware('tokenAuth.loggedIn');
+	Route::post('/logout', 'AuthController@logout')->middleware('tokenAuth.loggedIn');
 });
