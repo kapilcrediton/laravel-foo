@@ -10,9 +10,9 @@ class LoggedIn
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = TokenAuth::getUserForAuthenticatedRequest($request);
+        TokenAuth::authenticateRequest($request);
         
-        if ($user === null)
+        if ($request->user() === null)
         {
             return response()->json([
                 'msg' => 'unauthorized'

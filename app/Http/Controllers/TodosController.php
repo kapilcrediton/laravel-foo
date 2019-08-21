@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Todo;
-use App\Providers\TokenAuth\Facade as TokenAuth;
 use Validator;
 
 class TodosController extends Controller
@@ -36,7 +35,7 @@ class TodosController extends Controller
 
     public function create(Request $request)
     {
-        $user = TokenAuth::getUserForAuthenticatedRequest($request);
+        $user = $request->user();
         $input = array_merge($request->only(['text']), ['user_id' => $user->id]);
 
         $validator = Validator::make($input, [
@@ -70,7 +69,7 @@ class TodosController extends Controller
             ], 404);
         }
 
-        $user = TokenAuth::getUserForAuthenticatedRequest($request);
+        $user = $request->user();
         $input = array_merge($request->only(['text']), ['user_id' => $user->id]);
 
         $validator = Validator::make($input, [

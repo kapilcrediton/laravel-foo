@@ -8,6 +8,7 @@ use Validator;
 use Hash;
 use Str;
 use Cache;
+use Response;
 use App\Providers\TokenAuth\Facade as TokenAuth;
 
 class AuthController extends Controller {
@@ -23,7 +24,7 @@ class AuthController extends Controller {
 
         if ($validator->fails())
         {
-            return response()->json($validator->errors(), 400);
+            return Response::json($validator->errors(), 400);
         }
 
         // salted password encryption before saving
@@ -34,10 +35,11 @@ class AuthController extends Controller {
 
         $token = TokenAuth::loginUserAndGetToken($user);
 
-        return response()->json([
+        return Response::json([
             'msg' => 'registered',
-            'token' => $token
-        ]);
+            'token' => $token,
+            'user' => $user
+        ], 200);
     }
 
     public function login(Request $request)
@@ -51,7 +53,7 @@ class AuthController extends Controller {
 
         if ($validator->fails())
         {
-            return response()->json($validator->errors(), 400);
+            return Response::json($validator->errors(), 400);
         }
 
         $user = User::where('email', $input['email'])->first();
@@ -61,14 +63,15 @@ class AuthController extends Controller {
         {
             $token = TokenAuth::loginUserAndGetToken($user);
 
-            return response()->json([
+            return Response::json([
                 'msg' => 'logged in',
-                'token' => $token
+                'token' => $token,
+                'user' => $user
             ]);
         }
         else
         {
-            return response()->json([
+            return Response::json([
                 'msg' => 'invalid email/password'
             ], 400);
         }
@@ -76,21 +79,20 @@ class AuthController extends Controller {
 
     public function account(Request $request)
     {
-        // middleware should allow access to this
-        // action only when $request is logged-in using token
+        // $user = TokenAuth::getUserForAuthenticatedRequest($request);
+        $user = $request->user();
 
-        $user = TokenAuth::getUserForAuthenticatedRequest($request);
-
-        return response()->json([
+        return Response::json([
             'user' => $user
         ]);
     }
 
     public function logout(Request $request)
     {
-        TokenAuth::logoutAuthenticatedRequest($request);
+        // TokenAuth::logoutAuthenticatedRequest($request);
+        $user = $request->user();
 
-        return response()->json([
+        return Response::json([
             'msg' => 'done'
         ]);
     }

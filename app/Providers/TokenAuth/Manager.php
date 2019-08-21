@@ -17,13 +17,15 @@ class Manager
         return $token;
     }
 
-    public function getUserForAuthenticatedRequest(Request $request)
+    public function authenticateRequest(Request $request)
     {
         $token = $request->header('auth-token');
         $userId = Cache::get($token, null);
         $user = $userId ? User::where('id', $userId)->first() : null;
 
-        return $user;
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
     }
 
     public function logoutAuthenticatedRequest(Request $request)

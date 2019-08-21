@@ -10,9 +10,9 @@ class LoggedOut
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = TokenAuth::getUserForAuthenticatedRequest($request);
+        TokenAuth::authenticateRequest($request);
 
-        if ($user === null)
+        if ($request->user() === null)
         {
             return $next($request);
         }
