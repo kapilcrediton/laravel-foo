@@ -23,9 +23,11 @@ class Manager
         $userId = Cache::get($token, null);
         $user = $userId ? User::where('id', $userId)->first() : null;
 
-        $request->setUserResolver(function () use ($user) {
-            return $user;
-        });
+        if ($user) {
+            $request->setUserResolver(function () use ($user) {
+                return $user;
+            });
+        }
     }
 
     public function logoutAuthenticatedRequest(Request $request)

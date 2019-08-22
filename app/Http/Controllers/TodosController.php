@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Todo;
 use Validator;
+use Response;
 
 class TodosController extends Controller
 {
@@ -12,7 +13,7 @@ class TodosController extends Controller
     {
         $todos = Todo::all();
 
-        return response()->json([
+        return Response::json([
             'todos' => $todos
         ]);
     }
@@ -23,12 +24,12 @@ class TodosController extends Controller
 
         if ($todo === null)
         {
-            return response()->json([
+            return Response::json([
                 'msg' => 'not found'
             ], 404);
         }
 
-        return response()->json([
+        return Response::json([
             'todo' => $todo
         ]);
     }
@@ -45,14 +46,14 @@ class TodosController extends Controller
 
         if ($validator->fails())
         {
-            return response()->json($validator->errors(), 400);
+            return Response::json($validator->errors(), 400);
         }
 
         $todo = (new Todo())->fill($input);
         $todo->save();
         $todo->refresh();
 
-        return response()->json([
+        return Response::json([
             'msg' => 'done',
             'todo' => $todo
         ]);
@@ -64,7 +65,7 @@ class TodosController extends Controller
 
         if ($todo === null)
         {
-            return response()->json([
+            return Response::json([
                 'msg' => 'not found'
             ], 404);
         }
@@ -79,12 +80,12 @@ class TodosController extends Controller
 
         if ($validator->fails())
         {
-            return response()->json($validator->errors(), 400);
+            return Response::json($validator->errors(), 400);
         }
 
         $todo->update($input);
 
-        return response()->json([
+        return Response::json([
             'msg' => 'done',
             'todo' => $todo
         ]);
@@ -96,14 +97,14 @@ class TodosController extends Controller
 
         if ($todo === null)
         {
-            return response()->json([
+            return Response::json([
                 'msg' => 'not found'
             ], 404);
         }
 
         $todo->markComplete();
 
-        return response()->json([
+        return Response::json([
             'msg' => 'done',
             'todo' => $todo
         ]);
@@ -115,7 +116,7 @@ class TodosController extends Controller
 
         if ($todo === null)
         {
-            return response()->json([
+            return Response::json([
                 'msg' => 'not found'
             ], 404);
         }
@@ -134,14 +135,14 @@ class TodosController extends Controller
 
         if ($todo === null)
         {
-            return response()->json([
+            return Response::json([
                 'msg' => 'not found'
             ], 404);
         }
 
         $todo->delete();
 
-        return response()->json([
+        return Response::json([
             'msg' => 'done'
         ]);
     }
